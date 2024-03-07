@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -13,12 +14,14 @@ type Config struct {
 
 type AppConfig struct {
 	Environment string
+	Id          string
 }
 
 type KafkaConfig struct {
 	Brokers        []string
 	TopicsConsumer []string
 	TopicsProducer []string
+	TopicsError    []string
 	GroupID        string
 }
 
@@ -32,9 +35,13 @@ var validators = []configValidator{
 
 var internalConfig *Config
 
-func InitConfig() {
+func InitConfig(configPath string) {
 	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
+	if configPath != "" {
+		viper.AddConfigPath(configPath)
+	} else {
+		viper.AddConfigPath(".")
+	}
 	viper.SetConfigType("yaml")
 	viper.AutomaticEnv()
 
@@ -44,8 +51,14 @@ func InitConfig() {
 	if err != nil {
 		log.Fatalf("read config failed: %v", err)
 	}
-	if err := viper.Unmarshal(&internalConfig); err != nil {
-		log.Fatalf("unmarshal config failed: %v", err)
+
+	var configMap map[string]interface{}
+	if err := viper.Unmarshal(&configMap); err != nil {
+		log.Fatalf("unmarshal to map failed: %v", err)
+	}
+
+	if err := mapstructure.Decode(configMap, &internalConfig); err != nil {
+		log.Fatalf("decode map to struct failed: %v", err)
 	}
 
 	for _, validator := range validators {

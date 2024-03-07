@@ -4,6 +4,7 @@ go 1.21.0
 
 require (
 	github.com/IBM/sarama v1.42.1
+	github.com/jacksonbarreto/DNSSECAnalyzer v0.0.0-20231230213248-a0502e294a3a
 	github.com/spf13/viper v1.18.1
 )
 
