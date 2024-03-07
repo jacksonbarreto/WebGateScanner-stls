@@ -1,10 +1,10 @@
-package consumer
+package groupHandler
 
 import (
 	"github.com/IBM/sarama"
 	"github.com/jacksonbarreto/DNSSECAnalyzer/pkg/logservice"
-	"github.com/jacksonbarreto/stls/config"
-	"github.com/jacksonbarreto/stls/scanner"
+	"github.com/jacksonbarreto/WebGateScanner-stls/config"
+	"github.com/jacksonbarreto/WebGateScanner-stls/scanner"
 )
 
 type Scanner interface {

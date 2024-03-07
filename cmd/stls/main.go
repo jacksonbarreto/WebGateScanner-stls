@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/jacksonbarreto/stls/config"
-	"github.com/jacksonbarreto/stls/internal/consumer"
-	"github.com/jacksonbarreto/stls/scanner"
+	"context"
+	"github.com/jacksonbarreto/WebGateScanner-kafka/consumer"
+	"github.com/jacksonbarreto/WebGateScanner-stls/config"
+	"github.com/jacksonbarreto/WebGateScanner-stls/internal/groupHandler"
+	"github.com/jacksonbarreto/WebGateScanner-stls/scanner"
 )
 
 const configFilePath = ""
@@ -11,8 +13,10 @@ const configFilePath = ""
 func main() {
 	config.InitConfig(configFilePath)
 	scan := scanner.NewScanner()
-	handler := consumer.NewConsumerGroupHandlerDefault(scan)
-	kafkaConsumer, consumerErr := consumer.NewConsumerDefault(handler)
+	handler := groupHandler.NewConsumerGroupHandlerDefault(scan)
+	kafkaConfig := config.Kafka()
+	kafkaConsumer, consumerErr := consumer.New(kafkaConfig.Brokers, kafkaConfig.GroupID,
+		kafkaConfig.TopicsConsumer, handler, context.Background())
 	if consumerErr != nil {
 		panic(consumerErr)
 	}
