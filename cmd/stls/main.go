@@ -15,7 +15,7 @@ func main() {
 	scan := scanner.NewScanner()
 	handler := groupHandler.NewConsumerGroupHandlerDefault(scan)
 	kafkaConfig := config.Kafka()
-	kafkaConsumer, consumerErr := consumer.New(kafkaConfig.Brokers, kafkaConfig.GroupID,
+	kafkaConsumer, consumerErr := consumer.NewConsumer(kafkaConfig.Brokers, kafkaConfig.GroupID,
 		kafkaConfig.TopicsConsumer, handler, context.Background())
 	if consumerErr != nil {
 		panic(consumerErr)
