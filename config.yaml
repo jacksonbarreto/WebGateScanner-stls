@@ -1,7 +1,8 @@
 App:
-  environment: "dev"
+  Environment: "dev"
+  Id: "STLS-ASSESSMENT"
 kafka:
-  brokers: ["localhost:9092"]
-  topicsConsumer: ["security-assessment"]
-  topicsProducer: ["security-assessment"]
-  groupID: "security-assessment-ingestion-group"
+  Brokers: ["localhost:9092"]
+  TopicsConsumer: ["security-assessment"]
+  TopicsProducer: ["security-assessment"]
+  GroupID: "security-assessment-ingestion-group"
