@@ -50,7 +50,7 @@ jobs:
         id: version
         run: |
           echo "Calculating new version - startinggggggg"
-          lastTag=$(git describe --tags --abbrev=0 2>/dev/null)
+          lastTag=$(git describe --tags --abbrev=0 2>/dev/null || echo '')
           echo "lastTag= $lastTag"
           if [ -z "$lastTag" ]; then
             MAJOR=0
