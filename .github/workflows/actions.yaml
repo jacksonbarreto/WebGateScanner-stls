@@ -93,6 +93,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Verificar e Criar Repositório no Docker Hub
+        env:
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          REPO_NAME: nome_do_seu_repositorio
+        run: |
+          RESPONSE=$(curl --write-out "%{http_code}\n" --silent --output /dev/null -H "Authorization: JWT ${DOCKERHUB_TOKEN}" "https://hub.docker.com/v2/repositories/${DOCKERHUB_USERNAME}/${REPO_NAME}/")
+          echo "Response code: $RESPONSE"
+          if [ "$RESPONSE" -eq "404" ]; then
+            echo "Repositório não encontrado. Criando..."
+            # Substitua este comando pelo comando de criação de repositório via API, se disponível.
+            # Isso é apenas um exemplo teórico e pode não funcionar diretamente.
+            curl -X POST -H "Content-Type: application/json" -H "Authorization: JWT ${DOCKERHUB_TOKEN}" -d '{"name": "${REPO_NAME}", "namespace": "${DOCKERHUB_USERNAME}"}' "https://hub.docker.com/v2/repositories/"
+          else
+            echo "Repositório já existe."
+          fi
+
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
