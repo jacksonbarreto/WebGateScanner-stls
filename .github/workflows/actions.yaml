@@ -49,12 +49,10 @@ jobs:
       - name: Calculate new version
         id: version
         run: |
+          echo "Calculating new version - startinggggggg"
           lastTag=$(git describe --tags --abbrev=0 2>/dev/null)
-          if [ -z "$lastTag" ]; then
-            lastTag="0.0.0"
-          fi
           echo "lastTag= $lastTag"
-          if [ "$lastTag" == "0.0.0" ]; then
+          if [ -z "$lastTag" ]; then
             MAJOR=0
             MINOR=1
             PATCH=0
