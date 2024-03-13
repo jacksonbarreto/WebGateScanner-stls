@@ -1,8 +1,10 @@
 package groupHandler
 
 import (
+	"encoding/json"
 	"github.com/IBM/sarama"
-	"github.com/jacksonbarreto/DNSSECAnalyzer/pkg/logservice"
+	"github.com/jacksonbarreto/WebGateScanner-DNSSECAnalyzer/pkg/logservice"
+	kmodels "github.com/jacksonbarreto/WebGateScanner-kafka/models"
 	"github.com/jacksonbarreto/WebGateScanner-stls/config"
 	"github.com/jacksonbarreto/WebGateScanner-stls/scanner"
 )
@@ -36,13 +38,22 @@ func (h *GroupHandler) Cleanup(session sarama.ConsumerGroupSession) error {
 
 func (h *GroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for message := range claim.Messages() {
+
 		h.Log.Info("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
-		err := h.scanner.Scan(string(message.Value))
+
+		var evalRequest kmodels.EvaluationRequest
+		err := json.Unmarshal(message.Value, &evalRequest)
 		if err != nil {
-			h.Log.Error("Error scanning host '%s': %v", string(message.Value), err)
+			h.Log.Error("Error unmarshalling message: %v", err)
 			continue
 		}
-		h.Log.Info("Message processed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
+
+		err = h.scanner.Scan(evalRequest.URL)
+		if err != nil {
+			h.Log.Error("Error scanning host '%s': %v", evalRequest.URL, err)
+			continue
+		}
+		h.Log.Info("Message processed: value = %s, timestamp = %v, topic = %s", evalRequest.URL, message.Timestamp, message.Topic)
 		session.MarkMessage(message, "")
 	}
 	return nil

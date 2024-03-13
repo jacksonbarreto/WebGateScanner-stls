@@ -4,8 +4,8 @@ go 1.21.0
 
 require (
 	github.com/IBM/sarama v1.43.0
-	github.com/jacksonbarreto/DNSSECAnalyzer v0.0.0-20231230213248-a0502e294a3a
-	github.com/jacksonbarreto/WebGateScanner-kafka v0.0.0-20240307214930-0c8a7f630beb
+	github.com/jacksonbarreto/WebGateScanner-DNSSECAnalyzer v0.0.0-20240313173816-2ca574934b6a
+	github.com/jacksonbarreto/WebGateScanner-kafka v0.0.0-20240313164613-6481446821ac
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.18.2
 )
