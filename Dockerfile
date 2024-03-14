@@ -41,7 +41,6 @@ RUN wget https://github.com/drwetter/testssl.sh/archive/refs/heads/3.0.zip && \
 
 # Copy the compiled application from the builder stage
 COPY --from=builder /app/cmd/stls/app /home/stls/app
-COPY --from=builder /app/config.yaml /home/stls/config.yaml
 
 # Change ownership to the non-root user
 RUN chown -R stls:stls /home/stls
