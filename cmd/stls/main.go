@@ -12,7 +12,7 @@ const configFilePath = ""
 
 func main() {
 	config.InitConfig(configFilePath)
-	scan := scanner.NewScanner()
+	scan := scanner.NewScanner(config.App().PathToResults)
 	handler := groupHandler.NewConsumerGroupHandlerDefault(scan)
 	kafkaConfig := config.Kafka()
 	kafkaConsumer, consumerErr := consumer.NewConsumer(kafkaConfig.Brokers, kafkaConfig.GroupID,

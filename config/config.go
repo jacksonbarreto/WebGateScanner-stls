@@ -13,8 +13,9 @@ type Config struct {
 }
 
 type AppConfig struct {
-	Environment string
-	Id          string
+	Environment   string
+	Id            string
+	PathToResults string
 }
 
 type KafkaConfig struct {
