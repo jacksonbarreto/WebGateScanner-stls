@@ -24,7 +24,7 @@ func NewScannerDefault(pathToResults string) *Scanner {
 }
 
 func (s *Scanner) Scan(host string) error {
-	fileName := s.PathToResults + "-" + host + ".json"
+	fileName := s.PathToResults + host + ".json"
 	fileNameDone := fileName + ".done"
 	s.Log.Info("Scanning host '%s'...", host)
 	cmd := exec.Command("/home/stls/testssl.sh/testssl.sh", "--jsonfile-pretty", fileName, host)
