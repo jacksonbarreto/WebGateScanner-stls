@@ -22,13 +22,9 @@ type TestSSLResponse struct {
 			Severity string `json:"severity"`
 			Finding  string `json:"finding"`
 		} `json:"pretest"`
-		Protocols []struct {
-			ID       string `json:"id"`
-			Severity string `json:"severity"`
-			Finding  string `json:"finding"`
-		} `json:"protocols"`
-		Grease  []any `json:"grease"`
-		Ciphers []struct {
+		Protocols []Protocols `json:"protocols"`
+		Grease    []any       `json:"grease"`
+		Ciphers   []struct {
 			ID       string `json:"id"`
 			Severity string `json:"severity"`
 			Cwe      string `json:"cwe,omitempty"`
@@ -74,4 +70,10 @@ type TestSSLResponse struct {
 		} `json:"browserSimulations"`
 	} `json:"scanResult"`
 	ScanTime int `json:"scanTime"`
+}
+
+type Protocols struct {
+	ID       string `json:"id"`
+	Severity string `json:"severity"`
+	Finding  string `json:"finding"`
 }
