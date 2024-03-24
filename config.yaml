@@ -2,6 +2,8 @@ App:
   Environment: "dev"
   Id: "STLS-ASSESSMENT"
   PathToResults: "/home/stls/results/"
+  ReadyToProcessSuffix: "done"
+  ProcessFileExtension: "json"
 kafka:
   Brokers: ["kafka1:9092", "kafka2:9092", "kafka3:9092"]
   TopicsConsumer: ["security-assessment"]
