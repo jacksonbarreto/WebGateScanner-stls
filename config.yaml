@@ -7,5 +7,6 @@ App:
 kafka:
   Brokers: ["kafka1:9092", "kafka2:9092", "kafka3:9092"]
   TopicsConsumer: ["security-assessment"]
-  TopicsProducer: ["security-assessment"]
-  GroupID: "security-assessment-ingestion-group"
+  TopicProducer: "evaluation-results"
+  TopicsError: "security-assessment-error"
+  GroupID: "security-assessment-https-group"
