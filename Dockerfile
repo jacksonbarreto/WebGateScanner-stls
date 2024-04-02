@@ -25,7 +25,6 @@ FROM alpine:3.19
 # Add a non-root user with a specific UID/GID
 RUN addgroup -g 1000 stls && \
     adduser -D -u 1000 -G stls stls
-USER stls
 
 # Install OpenSSL and bash for testssl.sh, and any other dependencies
 RUN apk add --no-cache bash openssl coreutils procps
@@ -38,7 +37,7 @@ RUN wget https://github.com/drwetter/testssl.sh/archive/refs/heads/3.0.zip && \
     rm 3.0.zip && \
     chmod +x testssl.sh/testssl.sh && \
     mkdir "results" && \
-    chmod 700 "results"
+    chmod 770 "results"
 
 
 # Copy the compiled application from the builder stage
@@ -47,6 +46,7 @@ COPY --from=builder /app/cmd/stls/app /home/stls/app
 # Change ownership to the non-root user
 RUN chown -R stls:stls /home/stls
 
+USER stls
 
 # Set the volume where the results will be stored
 VOLUME ["/home/stls/results"]
