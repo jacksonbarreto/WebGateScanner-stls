@@ -33,7 +33,7 @@ func (s *Scanner) Scan(host string) error {
 	fileName := s.pathToResults + host + s.processFileExtension
 	fileNameDone := fileName + s.readyToProcessSuffix
 	s.log.Info("Scanning host '%s'...", host)
-	cmd := exec.Command("/home/stls/testssl.sh/testssl.sh", "--jsonfile-pretty", fileName, host)
+	cmd := exec.Command("/home/stls/testssl.sh/testssl.sh", "--jsonfile", fileName, host)
 
 	err := cmd.Run()
 	if err != nil {
