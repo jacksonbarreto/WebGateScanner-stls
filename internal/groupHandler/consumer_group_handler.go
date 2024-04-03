@@ -7,6 +7,7 @@ import (
 	kmodels "github.com/jacksonbarreto/WebGateScanner-kafka/models"
 	"github.com/jacksonbarreto/WebGateScanner-stls/config"
 	"github.com/jacksonbarreto/WebGateScanner-stls/scanner"
+	"sync"
 )
 
 type Scanner interface {
@@ -37,24 +38,29 @@ func (h *GroupHandler) Cleanup(session sarama.ConsumerGroupSession) error {
 }
 
 func (h *GroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+	var wg sync.WaitGroup
 	for message := range claim.Messages() {
+		wg.Add(1)
+		go func(msg *sarama.ConsumerMessage) {
+			defer wg.Done()
+			h.Log.Info("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 
-		h.Log.Info("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
+			var evalRequest kmodels.EvaluationRequest
+			err := json.Unmarshal(msg.Value, &evalRequest)
+			if err != nil {
+				h.Log.Error("Error unmarshalling message: %v", err)
+				return
+			}
 
-		var evalRequest kmodels.EvaluationRequest
-		err := json.Unmarshal(message.Value, &evalRequest)
-		if err != nil {
-			h.Log.Error("Error unmarshalling message: %v", err)
-			continue
-		}
-
-		err = h.scanner.Scan(evalRequest.URL)
-		if err != nil {
-			h.Log.Error("Error scanning host '%s': %v", evalRequest.URL, err)
-			continue
-		}
-		h.Log.Info("Message processed: value = %s, timestamp = %v, topic = %s", evalRequest.URL, message.Timestamp, message.Topic)
-		session.MarkMessage(message, "")
+			err = h.scanner.Scan(evalRequest.URL)
+			if err != nil {
+				h.Log.Error("Error scanning host '%s': %v", evalRequest.URL, err)
+				return
+			}
+			h.Log.Info("Message processed: value = %s, timestamp = %v, topic = %s", evalRequest.URL, message.Timestamp, message.Topic)
+			session.MarkMessage(msg, "")
+		}(message)
 	}
+	wg.Wait()
 	return nil
 }
